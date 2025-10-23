@@ -8,6 +8,7 @@ app = Flask(__name__)
 app.register_blueprint(blueprint_app)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = config.SQLALCHEMY_DATABASE_URI
+app.config["SECRET_KEY"] = config.APP_SECRET_KEY
 utils.db.init_app(app)
 
 with app.app_context():
@@ -18,4 +19,4 @@ with app.app_context():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True, host="0.0.0.0")
