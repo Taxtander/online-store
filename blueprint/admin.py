@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session, redirect, abort
+from flask import Blueprint, render_template, request, session, redirect, abort, url_for
 from utils import db
 import config
 from models.product import Product
@@ -51,3 +51,31 @@ def admin_product_page():
         db.session.commit()
 
         return "done"
+
+
+@app.route("/admin/dashboard/product/edit-product/<id>", methods=["GET","POST"])
+def admin_edit_product_page(id):
+    product = Product.query.filter(Product.id == id).first_or_404()
+
+    if request.method == "GET":
+
+        return render_template("/admin/edit-product.html",product=product)
+    else:
+        name = request.form.get("name", None)
+        description = request.form.get("description", None)
+        price = request.form.get("price", None)
+        active = request.form.get("active", None)
+
+        product.name = name
+        product.description = description
+        product.price = price
+        product.active = 1 if active else 0
+
+        print(product.name, product.description, product.price, product.active)
+
+
+
+        db.session.commit()
+
+        return redirect(url_for("main_blueprint.admin.admin_edit_product_page", id=id))
+
